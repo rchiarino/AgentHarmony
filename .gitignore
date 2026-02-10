@@ -1,0 +1,44 @@
+# Dependencies
+node_modules/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+.tmp/
+temp/
+*.tmp
+
+# Build outputs
+dist/
+build/
+*.tgz
+
+# Testing
+coverage/
+.nyc_output/
+
+# Session files (AgentHarmony specific)
+.tmp/sessions/
+.tmp/context/
+.tmp/tasks/
+
+# Local configuration
+.opencode/config.local.json
