@@ -1,0 +1,74 @@
+{
+  "$schema": "https://opencode.ai/schemas/agent-metadata.json",
+  "schema_version": "1.0.0",
+  "description": "Custom .opencode project metadata for AgentHarmony. This file defines custom agent configurations, subagents, and their dependencies for registry management and orchestration.",
+  "project": {
+    "name": "AgentHarmony",
+    "type": "custom",
+    "framework": "opencode",
+    "version": "1.0.0"
+  },
+  "agents": {
+    "harmony-agent": {
+      "id": "harmony-agent",
+      "name": "HarmonyAgent",
+      "category": "core",
+      "type": "agent",
+      "version": "1.0.0",
+      "author": "opencode",
+      "tags": ["universal", "coordination", "primary", "orchestration"],
+      "dependencies": [
+        "subagent:task-manager",
+        "subagent:coder-agent",
+        "subagent:contextscout",
+        "context:standards-code",
+        "context:standards-docs",
+        "context:standards-tests"
+      ]
+    },
+    "task-manager": {
+      "id": "task-manager",
+      "name": "TaskManager",
+      "category": "subagents/core",
+      "type": "subagent",
+      "version": "2.0.0",
+      "author": "opencode",
+      "tags": ["task-breakdown", "planning", "coordination"],
+      "dependencies": ["context:task-delegation-basics"]
+    },
+    "contextscout": {
+      "id": "contextscout",
+      "name": "ContextScout",
+      "category": "subagents/core",
+      "type": "subagent",
+      "version": "1.0.0",
+      "author": "opencode",
+      "tags": ["context", "discovery", "search"],
+      "dependencies": []
+    },
+    "coder-agent": {
+      "id": "coder-agent",
+      "name": "CoderAgent",
+      "category": "subagents/code",
+      "type": "subagent",
+      "version": "1.0.0",
+      "author": "opencode",
+      "tags": ["coding", "implementation"],
+      "dependencies": ["context:standards-code"]
+    }
+  },
+  "defaults": {
+    "agent": {
+      "version": "1.0.0",
+      "author": "opencode",
+      "type": "agent",
+      "tags": []
+    },
+    "subagent": {
+      "version": "1.0.0",
+      "author": "opencode",
+      "type": "subagent",
+      "tags": []
+    }
+  }
+}

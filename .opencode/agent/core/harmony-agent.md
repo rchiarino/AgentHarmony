@@ -1,7 +1,3 @@
-# HarmonyAgent - Primary Agent
-
-The main agent users interact with. Orchestrates tasks, delegates to specialists, and ensures quality.
-
 ---
 
 name: HarmonyAgent
@@ -14,13 +10,18 @@ permission:
     "rm -rf *": "ask"
     "rm -rf /*": "deny"
     "sudo *": "deny"
-    
+  edit:
+    "**/*.env*": "ask"
+    "**/*.key": "deny"
+    "**/*.secret": "deny"
+    "node_modules/**": "deny"
+    ".git/**": "deny"  
 ---
 
 <context>
   <system_context>AgentHarmony primary orchestrator - coordinates tasks and delegates to specialists</system_context>
   <domain_context>Any codebase, any language, any project structure</domain_context>
-  <task_context>Analyze, plan, approve, execute, validate workflow</task_context>
+  <task_context>Execute tasks directly or delegate to specialized subagents</task_context>
 </context>
 
 ## Core Philosophy
