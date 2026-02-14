@@ -6,19 +6,20 @@
 # This script downloads and installs the .opencode configuration from the
 # AgentHarmony repository into your current project directory.
 #
-# Usage:
-#   curl -fsSL https://raw.githubusercontent.com/rchiarino/AgentHarmony/main/install-opencode.sh | bash
+# Usage (via GitHub Release - works even with private repo):
+#   curl -fsSL https://github.com/rchiarino/AgentHarmony/releases/latest/download/install-opencode.sh | bash
 #   
 #   Or download first:
-#   curl -fsSL https://raw.githubusercontent.com/rchiarino/AgentHarmony/main/install-opencode.sh -o install-opencode.sh
-#   chmod +x install-opencode.sh
-#   ./install-opencode.sh
+#   curl -fsSL https://github.com/rchiarino/AgentHarmony/releases/latest/download/install-opencode.sh -o install.sh
+#   chmod +x install.sh
+#   ./install.sh
 # =============================================================================
 
 set -e
 
 # Configuration
 REPO_URL="https://github.com/rchiarino/AgentHarmony"
+RELEASE_URL="${REPO_URL}/releases/latest/download"
 RAW_URL="https://raw.githubusercontent.com/rchiarino/AgentHarmony/main"
 OPENCODE_DIR=".opencode"
 TMP_DIR=$(mktemp -d)
@@ -62,91 +63,65 @@ trap cleanup EXIT
 # Download Functions
 # =============================================================================
 
-download_file() {
-    local remote_path="$1"
-    local local_path="$2"
-    local url="${RAW_URL}/${remote_path}"
-    
-    # Create directory structure if needed
-    mkdir -p "$(dirname "$local_path")"
+download_from_release() {
+    local url="$1"
+    local output="$2"
     
     if command -v curl &> /dev/null; then
-        curl -fsSL "$url" -o "$local_path" 2>/dev/null
+        curl -fsSL "$url" -o "$output" 2>/dev/null && return 0
     elif command -v wget &> /dev/null; then
-        wget -q "$url" -O "$local_path" 2>/dev/null
-    else
-        log_error "Neither curl nor wget is installed. Please install one of them."
-        exit 1
+        wget -q "$url" -O "$output" 2>/dev/null && return 0
     fi
+    return 1
 }
 
-download_directory() {
-    local dir_path="$1"
-    local api_url="https://api.github.com/repos/rchiarino/AgentHarmony/contents/${dir_path}"
+# Try to download from GitHub Releases first (works with private repos)
+download_via_release() {
+    log_info "Attempting to download from GitHub Releases..."
     
-    # Get directory contents from GitHub API
-    local response
-    if command -v curl &> /dev/null; then
-        response=$(curl -fsSL "$api_url" 2>/dev/null)
-    elif command -v wget &> /dev/null; then
-        response=$(wget -qO- "$api_url" 2>/dev/null)
+    local tar_url="${RELEASE_URL}/opencode-config.tar.gz"
+    local tar_file="${TMP_DIR}/opencode-config.tar.gz"
+    
+    if download_from_release "$tar_url" "$tar_file"; then
+        log_info "Downloaded release archive, extracting..."
+        tar -xzf "$tar_file" -C "$TMP_DIR"
+        rm -f "$tar_file"
+        return 0
     fi
     
-    if [ -z "$response" ]; then
-        log_error "Failed to fetch directory listing from GitHub API"
-        exit 1
-    fi
-    
-    # Parse and download each item
-    echo "$response" | grep -o '"path":"[^"]*"' | cut -d'"' -f4 | while read -r item; do
-        local item_type=$(echo "$response" | grep -A5 "\"path\":\"$item\"" | grep '"type":' | head -1 | cut -d'"' -f4)
-        
-        if [ "$item_type" = "file" ]; then
-            local target_path="${TMP_DIR}/${item}"
-            log_info "Downloading: $item"
-            download_file "$item" "$target_path"
-        elif [ "$item_type" = "dir" ]; then
-            download_directory "$item"
-        fi
-    done
+    return 1
 }
 
-# Alternative: Use git archive or download zip for better reliability
-download_via_zip() {
-    log_info "Downloading AgentHarmony repository..."
+# Fallback: Download from repository directly (requires public repo)
+download_via_repo() {
+    log_info "Release download failed, trying repository directly..."
+    log_warn "Note: This requires the repository to be public"
     
     local zip_url="${REPO_URL}/archive/refs/heads/main.zip"
     local zip_file="${TMP_DIR}/agentharmony.zip"
     
     if command -v curl &> /dev/null; then
-        curl -fsSL "$zip_url" -o "$zip_file"
+        curl -fsSL "$zip_url" -o "$zip_file" 2>/dev/null || return 1
     elif command -v wget &> /dev/null; then
-        wget -q "$zip_url" -O "$zip_file"
-    fi
-    
-    if [ ! -f "$zip_file" ]; then
-        log_error "Failed to download repository"
-        exit 1
+        wget -q "$zip_url" -O "$zip_file" 2>/dev/null || return 1
+    else
+        log_error "Neither curl nor wget is installed"
+        return 1
     fi
     
     log_info "Extracting .opencode directory..."
     
-    # Extract only .opencode directory
     if command -v unzip &> /dev/null; then
         unzip -q "$zip_file" "AgentHarmony-main/.opencode/*" -d "$TMP_DIR"
         mv "${TMP_DIR}/AgentHarmony-main/.opencode" "${TMP_DIR}/.opencode"
         rm -rf "${TMP_DIR}/AgentHarmony-main"
-    elif command -v tar &> /dev/null && tar --help 2>&1 | grep -q unzip; then
-        # Some tar versions can handle zip
-        tar -xf "$zip_file" -C "$TMP_DIR" "AgentHarmony-main/.opencode"
-        mv "${TMP_DIR}/AgentHarmony-main/.opencode" "${TMP_DIR}/.opencode"
-        rm -rf "${TMP_DIR}/AgentHarmony-main"
     else
-        log_error "unzip is required but not installed. Please install unzip."
-        exit 1
+        log_error "unzip is required but not installed"
+        return 1
     fi
     
     rm -f "$zip_file"
+    return 0
 }
 
 # =============================================================================
@@ -195,16 +170,24 @@ main() {
     
     # Download the configuration
     echo ""
-    log_info "Downloading configuration from GitHub..."
+    log_info "Downloading configuration..."
     
-    if ! download_via_zip; then
-        log_error "Download failed"
+    # Try release first (works with private repos), then fall back to repo
+    if ! download_via_release && ! download_via_repo; then
+        log_error "Download failed! Possible reasons:"
+        echo "  - No release exists yet (create one in GitHub)"
+        echo "  - Repository is private and no release is available"
+        echo "  - Network connectivity issues"
+        echo ""
+        echo "Solutions:"
+        echo "  1. Make sure you've created a release in your GitHub repo"
+        echo "  2. Or make your repository public"
         exit 1
     fi
     
     # Verify download
     if [ ! -d "${TMP_DIR}/.opencode" ]; then
-        log_error "Downloaded content not found"
+        log_error "Downloaded content not found in expected location"
         exit 1
     fi
     
