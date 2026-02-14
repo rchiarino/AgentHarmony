@@ -7,15 +7,15 @@ A comprehensive AI orchestration system with specialized subagents for software 
 Install the AgentHarmony `.opencode` configuration in any project with a single command:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/rchiarino/AgentHarmony/main/install-opencode.sh | bash
+curl -fsSL https://raw.githubusercontent.com/rchiarino/AgentHarmony/main/install.sh | bash
 ```
 
 Or download and run manually:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/rchiarino/AgentHarmony/main/install-opencode.sh -o install-opencode.sh
-chmod +x install-opencode.sh
-./install-opencode.sh
+curl -fsSL https://raw.githubusercontent.com/rchiarino/AgentHarmony/main/install.sh -o install.sh
+chmod +x install.sh
+./install.sh
 ```
 
 ### What Gets Installed?
