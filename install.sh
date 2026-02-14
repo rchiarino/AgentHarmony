@@ -9,7 +9,7 @@
 # Usage:
 #   curl -fsSL https://raw.githubusercontent.com/rchiarino/AgentHarmony/main/install.sh | bash
 #   
-#   Or download first:
+#   Or download first for interactive mode:
 #   curl -fsSL https://raw.githubusercontent.com/rchiarino/AgentHarmony/main/install.sh -o install.sh
 #   chmod +x install.sh
 #   ./install.sh
@@ -57,6 +57,11 @@ cleanup() {
 
 trap cleanup EXIT
 
+# Check if running interactively
+is_interactive() {
+    [ -t 0 ]
+}
+
 # =============================================================================
 # Download Functions
 # =============================================================================
@@ -75,27 +80,32 @@ download() {
     fi
 }
 
-# Download via repository zip (works with both public/private when using releases)
 download_via_repo() {
     log_info "Downloading AgentHarmony repository..."
     
     local zip_url="${REPO_URL}/archive/refs/heads/main.zip"
     local zip_file="${TMP_DIR}/agentharmony.zip"
     
-    download "$zip_url" "$zip_file"
+    if ! download "$zip_url" "$zip_file"; then
+        return 1
+    fi
     
     log_info "Extracting .opencode directory..."
     
     if command -v unzip &> /dev/null; then
-        unzip -q "$zip_file" "AgentHarmony-main/.opencode/*" -d "$TMP_DIR"
+        unzip -q "$zip_file" "AgentHarmony-main/.opencode/*" -d "$TMP_DIR" 2>/dev/null || {
+            log_error "Failed to extract archive"
+            return 1
+        }
         mv "${TMP_DIR}/AgentHarmony-main/.opencode" "${TMP_DIR}/.opencode"
         rm -rf "${TMP_DIR}/AgentHarmony-main"
     else
-        log_error "unzip is required but not installed"
+        log_error "unzip is required but not installed. Please install it first."
         exit 1
     fi
     
     rm -f "$zip_file"
+    return 0
 }
 
 # =============================================================================
@@ -116,30 +126,40 @@ main() {
         echo ""
         log_warn "An existing .opencode directory was found!"
         echo ""
-        echo "Options:"
-        echo "  1) Overwrite (delete existing and install fresh)"
-        echo "  2) Backup then install (backup existing as .opencode.backup.YYYYMMDD_HHMMSS)"
-        echo "  3) Cancel installation"
-        echo ""
-        read -p "Enter your choice (1-3): " choice
         
-        case "$choice" in
-            1)
-                log_info "Removing existing .opencode directory..."
-                rm -rf "$OPENCODE_DIR"
-                log_success "Existing directory removed"
-                ;;
-            2)
-                local backup_name=".opencode.backup.$(date +%Y%m%d_%H%M%S)"
-                log_info "Creating backup: $backup_name"
-                mv "$OPENCODE_DIR" "$backup_name"
-                log_success "Backup created: $backup_name"
-                ;;
-            3|*)
-                log_info "Installation cancelled by user"
-                exit 0
-                ;;
-        esac
+        # If running non-interactively (piped from curl), auto-backup
+        if ! is_interactive; then
+            local backup_name=".opencode.backup.$(date +%Y%m%d_%H%M%S)"
+            log_info "Non-interactive mode: Creating backup as $backup_name"
+            mv "$OPENCODE_DIR" "$backup_name"
+            log_success "Backup created: $backup_name"
+        else
+            # Interactive mode - ask user
+            echo "Options:"
+            echo "  1) Overwrite (delete existing and install fresh)"
+            echo "  2) Backup then install (backup existing as .opencode.backup.YYYYMMDD_HHMMSS)"
+            echo "  3) Cancel installation"
+            echo ""
+            read -p "Enter your choice (1-3): " choice
+            
+            case "$choice" in
+                1)
+                    log_info "Removing existing .opencode directory..."
+                    rm -rf "$OPENCODE_DIR"
+                    log_success "Existing directory removed"
+                    ;;
+                2)
+                    local backup_name=".opencode.backup.$(date +%Y%m%d_%H%M%S)"
+                    log_info "Creating backup: $backup_name"
+                    mv "$OPENCODE_DIR" "$backup_name"
+                    log_success "Backup created: $backup_name"
+                    ;;
+                3|*)
+                    log_info "Installation cancelled by user"
+                    exit 0
+                    ;;
+            esac
+        fi
     fi
     
     # Download the configuration
@@ -147,7 +167,12 @@ main() {
     log_info "Downloading configuration from GitHub..."
     
     if ! download_via_repo; then
-        log_error "Download failed! Make sure the repository exists and is accessible."
+        log_error "Download failed!"
+        echo ""
+        echo "Possible reasons:"
+        echo "  - Repository might be private (make it public to use raw URL install)"
+        echo "  - Network connectivity issues"
+        echo "  - GitHub is unreachable"
         exit 1
     fi
     
