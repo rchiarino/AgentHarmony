@@ -7,12 +7,12 @@
 # AgentHarmony repository into your current project directory.
 #
 # Usage:
-#   curl -fsSL https://raw.githubusercontent.com/rchiarino/AgentHarmony/main/install-opencode.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/rchiarino/AgentHarmony/main/install.sh | bash
 #   
 #   Or download first:
-#   curl -fsSL https://raw.githubusercontent.com/rchiarino/AgentHarmony/main/install-opencode.sh -o install-opencode.sh
-#   chmod +x install-opencode.sh
-#   ./install-opencode.sh
+#   curl -fsSL https://raw.githubusercontent.com/rchiarino/AgentHarmony/main/install.sh -o install.sh
+#   chmod +x install.sh
+#   ./install.sh
 # =============================================================================
 
 set -e
