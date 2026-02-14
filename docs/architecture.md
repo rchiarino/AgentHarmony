@@ -35,7 +35,7 @@ Small, focused components that compose together.
               ┌───────────────┼───────────────┐
               ▼               ▼               ▼
     ┌──────────────┐  ┌──────────────┐  ┌──────────────┐
-    │ContextScout  │  │ TaskManager  │  │ CoderAgent   │
+    │ContextSniffer  │  │ TaskManager  │  │ CoderAgent   │
     │              │  │              │  │              │
     │Discovers     │  │Breaks down   │  │Implements    │
     │context files │  │complex tasks │  │code          │
@@ -80,7 +80,7 @@ permission:
 
 **Agent Types:**
 - **Primary**: User-facing agents (HarmonyAgent)
-- **Subagent**: Specialized workers (ContextScout, CoderAgent)
+- **Subagent**: Specialized workers (ContextSniffer, CoderAgent)
 
 ### Context System
 
@@ -92,7 +92,7 @@ Context provides patterns and standards to agents.
 - **Skill**: Reusable workflows
 
 **Loading Process:**
-1. ContextScout discovers relevant files
+1. ContextSniffer discovers relevant files
 2. Agent reads context files
 3. Patterns applied to output
 
@@ -112,7 +112,7 @@ Skills define reusable workflows and commands.
         ↓
 2. HarmonyAgent analyzes
         ↓
-3. ContextScout discovers context
+3. ContextSniffer discovers context
         ↓
 4. Agent loads standards
         ↓
@@ -153,7 +153,7 @@ Skills define reusable workflows and commands.
 ### Adding Context
 1. Create markdown in `.opencode/context/`
 2. Add priority metadata
-3. Reference from ContextScout
+3. Reference from ContextSniffer
 4. Load in relevant agents
 
 ### Adding Skills

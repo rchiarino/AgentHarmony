@@ -58,7 +58,7 @@ Before doing anything, agents load relevant context:
 ```
 User Request
     ↓
-ContextScout discovers patterns
+ContextSniffer discovers patterns
     ↓
 Agent loads YOUR standards
     ↓
@@ -138,7 +138,7 @@ mode: subagent
 ## 📖 Workflow
 
 1. **Analyze** - Agent understands your request
-2. **Discover** - ContextScout finds relevant patterns
+2. **Discover** - ContextSniffer finds relevant patterns
 3. **Load** - Agent reads your standards
 4. **Propose** - Plan presented for approval
 5. **Execute** - Implementation with validation

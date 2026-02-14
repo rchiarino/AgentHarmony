@@ -60,7 +60,7 @@ Location: `.tmp/tasks/{feature-slug}/` (at project root)
 
 ```
 pending → in_progress   (by working agent, when deps satisfied)
-in_progress → completed (by TaskManager, after verification)
+in_progress → completed (by TheConductor, after verification)
 * → blocked             (by either, when issue found)
 blocked → pending       (when unblocked)
 ```

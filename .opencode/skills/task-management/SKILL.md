@@ -21,7 +21,7 @@ tags:
 
 ## What I Do
 
-I provide a command-line interface for managing task breakdowns created by the TaskManager subagent. I help you:
+I provide a command-line interface for managing task breakdowns created by the TaskDelegator subagent. I help you:
 
 - **Track progress** - See status of all features and their subtasks
 - **Find next tasks** - Show eligible tasks (dependencies satisfied)
@@ -194,19 +194,19 @@ Tasks are stored in `.tmp/tasks/` at the project root:
 
 ---
 
-## Integration with TaskManager
+## Integration with TaskDelegator
 
-The TaskManager subagent creates task files using this format. When you delegate to TaskManager:
+The TaskDelegator subagent creates task files using this format. When you delegate to TaskDelegator:
 
 ```javascript
 task(
-  subagent_type="TaskManager",
+  subagent_type="TaskDelegator",
   description="Implement feature X",
   prompt="Break down this feature into atomic subtasks..."
 )
 ```
 
-TaskManager creates:
+TaskDelegator creates:
 1. `.tmp/tasks/{feature}/task.json` - Feature metadata
 2. `.tmp/tasks/{feature}/subtask_XX.json` - Individual subtasks
 
@@ -269,9 +269,9 @@ bash .opencode/skills/task-management/router.sh validate my-feature
 
 ## Workflow Integration
 
-### With TaskManager Subagent
+### With TaskDelegator Subagent
 
-1. **TaskManager creates tasks** → Generates `.tmp/tasks/{feature}/` structure
+1. **TaskDelegator creates tasks** → Generates `.tmp/tasks/{feature}/` structure
 2. **You use this skill to track** → Monitor progress with `status`, `next`, `blocked`
 3. **You mark tasks complete** → Use `complete` command with summaries
 4. **Skill validates integrity** → Use `validate` to check consistency
@@ -290,8 +290,8 @@ Working agents (CoderAgent, TestEngineer, etc.) execute subtasks and report comp
 ### Starting a New Feature
 
 ```bash
-# 1. TaskManager creates the task structure
-task(subagent_type="TaskManager", description="Implement feature X", ...)
+# 1. TaskDelegator creates the task structure
+task(subagent_type="TaskDelegator", description="Implement feature X", ...)
 
 # 2. Check what's ready
 bash .opencode/skills/task-management/router.sh next
@@ -376,7 +376,7 @@ bash .opencode/skills/task-management/router.sh validate
 Make sure you're running from the project root or the router.sh can find it.
 
 ### "No tasks found"
-Run `status` to see if any tasks have been created yet. Use TaskManager to create tasks first.
+Run `status` to see if any tasks have been created yet. Use TaskDelegator to create tasks first.
 
 ### "Dependency not satisfied"
 Check the dependency tree with `deps` to see what's blocking the task.
@@ -391,7 +391,7 @@ Run `validate` to see specific issues, then check the JSON files in `.tmp/tasks/
 - **Skill**: `.opencode/skills/task-management/`
 - **Router**: `.opencode/skills/task-management/router.sh`
 - **CLI**: `.opencode/skills/task-management/scripts/task-cli.ts`
-- **Tasks**: `.tmp/tasks/` (created by TaskManager)
+- **Tasks**: `.tmp/tasks/` (created by TaskDelegator)
 - **Documentation**: `.opencode/skills/task-management/SKILL.md` (this file)
 
 ---

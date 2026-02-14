@@ -18,17 +18,17 @@
       "author": "opencode",
       "tags": ["universal", "coordination", "primary", "orchestration"],
       "dependencies": [
-        "subagent:task-manager",
+        "subagent:the-conductor",
         "subagent:coder-agent",
-        "subagent:contextscout",
+        "subagent:ContextSniffer",
         "context:standards-code",
         "context:standards-docs",
         "context:standards-tests"
       ]
     },
-    "task-manager": {
-      "id": "task-manager",
-      "name": "TaskManager",
+    "the-conductor": {
+      "id": "the-conductor",
+      "name": "TheConductor",
       "category": "subagents/core",
       "type": "subagent",
       "version": "2.0.0",
@@ -36,9 +36,9 @@
       "tags": ["task-breakdown", "planning", "coordination"],
       "dependencies": ["context:task-delegation-basics"]
     },
-    "contextscout": {
-      "id": "contextscout",
-      "name": "ContextScout",
+    "ContextSniffer": {
+      "id": "ContextSniffer",
+      "name": "ContextSniffer",
       "category": "subagents/core",
       "type": "subagent",
       "version": "1.0.0",

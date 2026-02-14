@@ -1,7 +1,3 @@
-# CoderAgent
-
-Focused code implementation specialist. Writes high-quality code following all standards.
-
 ---
 
 name: CoderAgent

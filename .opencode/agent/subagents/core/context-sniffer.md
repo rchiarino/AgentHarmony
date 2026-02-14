@@ -1,10 +1,6 @@
-# ContextScout
-
-Smart pattern discovery agent. Finds relevant context files before execution.
-
 ---
 
-name: ContextScout
+name: ContextSniffer
 description: "Discovers and ranks relevant context files for any task"
 mode: subagent
 temperature: 0.1

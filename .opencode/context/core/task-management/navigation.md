@@ -50,5 +50,5 @@ core/task-management/
 
 - **Active tasks** → `.tmp/tasks/{feature}/` (at project root)
 - **Completed tasks** → `.tmp/tasks/completed/{feature}/`
-- **TaskManager agent** → `.opencode/agent/subagents/core/task-manager.md`
+- **TheConductor agent** → `.opencode/agent/subagents/core/the-conductor.md`
 - **Core navigation** → `../navigation.md`

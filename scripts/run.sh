@@ -47,23 +47,23 @@ check_structure() {
         print_info "Make sure you're running from the AgentHarmony root directory"
         exit 1
     fi
-    
+
     if [ ! -d "$CONTEXT_DIR" ]; then
         print_error "Context directory not found: $CONTEXT_DIR"
         exit 1
     fi
-    
+
     print_success "Directory structure validated"
 }
 
 # Load agent metadata
 load_agent() {
     print_info "Loading agent from: $AGENT_FILE"
-    
+
     # Extract agent name from frontmatter
     AGENT_NAME=$(grep "^name:" "$AGENT_FILE" | head -1 | cut -d':' -f2 | xargs)
     AGENT_DESC=$(grep "^description:" "$AGENT_FILE" | head -1 | cut -d':' -f2- | xargs)
-    
+
     print_success "Agent loaded: $AGENT_NAME"
     print_info "Description: $AGENT_DESC"
     echo ""
@@ -72,16 +72,16 @@ load_agent() {
 # Simulate the agent workflow
 simulate_workflow() {
     local user_input="$1"
-    
+
     echo -e "${YELLOW}════════════════════════════════════════════════════════════${NC}"
     print_info "User Request: $user_input"
     echo -e "${YELLOW}════════════════════════════════════════════════════════════${NC}"
     echo ""
-    
+
     # Stage 1: Analyze
     print_info "Stage 1: Analyzing request..."
     sleep 0.5
-    
+
     if [[ "$user_input" == *"?"* ]] && [[ ! "$user_input" == *"create"* ]] && [[ ! "$user_input" == *"write"* ]]; then
         print_success "Identified as: Conversational (informational)"
         echo ""
@@ -94,27 +94,27 @@ simulate_workflow() {
         print_success "Identified as: Task Execution (requires approval)"
     fi
     echo ""
-    
+
     # Stage 2: Discover Context
     print_info "Stage 2: Discovering relevant context..."
     sleep 0.5
-    
-    # Simulate ContextScout
-    echo "  → Calling ContextScout subagent..."
+
+    # Simulate ContextSniffer
+    echo "  → Calling ContextSniffer subagent..."
     sleep 0.3
-    print_success "ContextScout found relevant files:"
+    print_success "ContextSniffer found relevant files:"
     echo "    • core/standards/code-quality.md (Critical)"
     echo "    • core/standards/security-patterns.md (High)"
     echo "    • project/tech-stack.md (Medium - if exists)"
     echo ""
-    
+
     # Stage 3: Load Standards
     print_info "Stage 3: Loading standards..."
     sleep 0.5
     print_success "Loaded: code-quality.md"
     print_success "Loaded: security-patterns.md"
     echo ""
-    
+
     # Stage 4: Propose Plan
     print_info "Stage 4: Proposing implementation plan..."
     echo ""
@@ -138,19 +138,19 @@ simulate_workflow() {
     echo ""
     echo -e "${YELLOW}⚠ APPROVAL REQUIRED BEFORE PROCEEDING${NC}"
     echo ""
-    
+
     # Simulate approval prompt
     read -p "Approve this plan? [y/n/details]: " approval
-    
+
     if [[ "$approval" == "y" || "$approval" == "Y" ]]; then
         echo ""
         print_success "Plan approved! Proceeding to execution..."
         echo ""
-        
+
         # Stage 5: Execute
         print_info "Stage 5: Executing implementation..."
         sleep 0.5
-        
+
         # Simulate delegation for complex tasks
         if [[ "$user_input" == *"system"* ]] || [[ "$user_input" == *"complex"* ]]; then
             echo "  → Task is complex, delegating to CoderAgent..."
@@ -162,7 +162,7 @@ simulate_workflow() {
             print_success "Implementation complete"
         fi
         echo ""
-        
+
         # Stage 6: Validate
         print_info "Stage 6: Validating implementation..."
         sleep 0.3
@@ -170,7 +170,7 @@ simulate_workflow() {
         print_success "Security patterns: PASS"
         print_success "Function size (< 50 lines): PASS"
         echo ""
-        
+
         # Stage 7: Summarize
         print_info "Stage 7: Summary"
         echo -e "${GREEN}╔════════════════════════════════════════════════════════════╗${NC}"
@@ -182,7 +182,7 @@ simulate_workflow() {
         echo "✓ Code ready for review"
         echo ""
         print_info "Files created/modified would be listed here in real implementation"
-        
+
     elif [[ "$approval" == "details" || "$approval" == "d" ]]; then
         echo ""
         print_info "Detailed Plan:"
@@ -224,18 +224,18 @@ run_demo() {
     print_header
     check_structure
     load_agent
-    
+
     echo ""
     echo -e "${BLUE}Running demo with sample requests...${NC}"
     echo ""
-    
+
     # Demo 1: Simple question
     simulate_workflow "What are pure functions?"
-    
+
     echo ""
     echo -e "${YELLOW}Press Enter to continue to next demo...${NC}"
     read
-    
+
     # Demo 2: Task execution
     simulate_workflow "Create a function to format user names"
 }
@@ -246,7 +246,7 @@ main() {
         show_help
         exit 1
     fi
-    
+
     case "$1" in
         --help|-h)
             show_help

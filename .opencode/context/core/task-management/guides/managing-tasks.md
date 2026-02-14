@@ -8,7 +8,7 @@
 
 ## Prerequisites
 
-- TaskManager agent available
+- TheConductor agent available
 - Feature folder created in `.tmp/tasks/` (at project root)
 
 ---
@@ -16,16 +16,16 @@
 ## Workflow Overview
 
 ```
-1. Initiation    → TaskManager creates task.json + subtasks
+1. Initiation    → TheConductor creates task.json + subtasks
 2. Selection     → Find eligible tasks (deps satisfied)
 3. Execution     → Working agent implements task
-4. Verification  → TaskManager validates completion
+4. Verification  → TheConductor validates completion
 5. Archiving     → Move to completed/ when done
 ```
 
 ---
 
-## 1. Initiation (TaskManager)
+## 1. Initiation (TheConductor)
 
 Create feature folder and files:
 ```
@@ -73,7 +73,7 @@ When picking up task:
 
 ---
 
-## 4. Verification (TaskManager)
+## 4. Verification (TheConductor)
 
 After agent signals completion:
 
@@ -99,9 +99,9 @@ When `completed_count == subtask_count`:
 
 | Status | Who Sets | When |
 |--------|----------|------|
-| pending | TaskManager | Initial creation |
+| pending | TheConductor | Initial creation |
 | in_progress | Working agent | Picks up task |
-| completed | TaskManager | After verification |
+| completed | TheConductor | After verification |
 | blocked | Either | Dependency/issue found |
 
 ---

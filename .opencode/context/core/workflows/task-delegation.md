@@ -77,6 +77,24 @@ task(
 - Validate quality
 - Handle errors appropriately
 
+### Step 4: Track with Task Management Skill
+
+After subagent completes, update task status:
+
+```bash
+# Mark subtask complete (for TheConductor breakdowns)
+bash .opencode/skills/task-management/router.sh complete {feature} {seq} "implementation summary"
+
+# Check next eligible tasks
+bash .opencode/skills/task-management/router.sh next {feature}
+
+# View overall progress
+bash .opencode/skills/task-management/router.sh status {feature}
+
+# Validate task integrity
+bash .opencode/skills/task-management/router.sh validate {feature}
+```
+
 ## Context Bundle Template
 
 ```markdown
@@ -119,8 +137,8 @@ Load these files:
 
 | Task Type | Delegate To |
 |-----------|-------------|
-| Find context files | ContextScout |
-| Break down complex task | TaskManager |
+| Find context files | ContextSniffer |
+| Break down complex task | TheConductor |
 | Write code | CoderAgent |
 | Write tests | TestEngineer |
 | Review code | CodeReviewer |
@@ -157,9 +175,9 @@ task(
 For multi-step tasks:
 
 ```javascript
-// First: Break down with TaskManager
+// First: Break down with TheConductor
 task(
-  subagent_type="TaskManager",
+  subagent_type="TheConductor",
   description="Break down auth feature",
   prompt="Create task breakdown for: Add user authentication
   
@@ -170,8 +188,11 @@ task(
   - Validation logic"
 )
 
-// Then: Execute each subtask
-// (See TaskManager output for execution order)
+// Then: Track and execute with task-management skill
+// Check status: bash .opencode/skills/task-management/router.sh status {feature}
+// Find next tasks: bash .opencode/skills/task-management/router.sh next {feature}
+// Execute each subtask with CoderAgent
+// Mark complete: bash .opencode/skills/task-management/router.sh complete {feature} {seq} "summary"
 ```
 
 ### Pattern 3: Parallel Delegation
@@ -263,3 +284,27 @@ After delegation:
 - [ ] Standards were followed
 - [ ] No errors introduced
 - [ ] Integration successful
+- [ ] Task status updated with skill (if using TheConductor)
+
+## Task Management Skill Integration
+
+When using TheConductor to break down features, integrate with the task-management skill:
+
+### Workflow
+
+1. **TheConductor creates breakdown** → Files in `.tmp/tasks/{feature}/`
+2. **Check status** → `bash .opencode/skills/task-management/router.sh status {feature}`
+3. **Find next tasks** → `bash .opencode/skills/task-management/router.sh next {feature}`
+4. **Delegate to CoderAgent** → Execute subtask
+5. **Mark complete** → `bash .opencode/skills/task-management/router.sh complete {feature} {seq} "summary"`
+6. **Repeat** → Until all subtasks done
+
+### Skill Commands Reference
+
+| Command | Purpose |
+|---------|---------|
+| `status [feature]` | Show task progress |
+| `next [feature]` | Show eligible tasks (deps satisfied) |
+| `complete <f> <seq> "msg"` | Mark subtask done |
+| `blocked [feature]` | Show blocked tasks |
+| `validate [feature]` | Check task integrity |
