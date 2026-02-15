@@ -6,10 +6,14 @@ mode: primary
 temperature: 0.2
 permission:
   bash:
-    "*": "ask"
     "rm -rf *": "ask"
     "rm -rf /*": "deny"
     "sudo *": "deny"
+    "ls *": "allow"
+    "chmod *": "ask"
+    "chown *": "ask"
+    "git push": "ask"
+    "git clone": "ask"
   edit:
     "**/*.env*": "ask"
     "**/*.key": "deny"
