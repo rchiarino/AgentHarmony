@@ -14,6 +14,7 @@ permission:
     "chown *": "ask"
     "git push": "ask"
     "git clone": "ask"
+    "pkill *": "ask"
   edit:
     "**/*.env*": "ask"
     "**/*.key": "deny"
