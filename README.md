@@ -83,19 +83,30 @@ If `.opencode` already exists, the installer will prompt you to:
 
 ```
 AgentHarmony/
-├── .opencode/                 # Configuration and agents
-│   ├── agent/                 # Agent definitions
-│   │   ├── core/              # Core agents
-│   │   └── subagents/         # Specialized subagents
-│   ├── context/               # Context files
-│   │   ├── core/              # Core standards
-│   │   └── project/           # Project-specific
-│   ├── skills/                # Reusable skills
-│   ├── commands/              # Command templates
-│   └── config/                # Configuration files
-├── install-opencode.sh        # Installation script
-├── LICENSE                    # License
-└── README.md                  # This file
+├── .opencode/                        # OpenCode configuration and skills
+│   ├── agent/                        # Agent definitions
+│   │   ├── core/                     # Core agents
+│   │   └── subagents/                # Specialized subagents
+│   ├── context/                      # Context files for agents
+│   │   ├── core/                     # Core context
+│   │   └── project/                  # Project-specific context
+│   ├── skills/                       # Skill definitions
+│   │   ├── task-management/          # Task tracking CLI
+│   │   ├── code-simplifier/          # Code simplification
+│   │   ├── frontend-design/          # Frontend design patterns
+│   │   ├── tailwind-design-system/  # Tailwind design system
+│   │   ├── web-design-guidelines/    # Web design guidelines
+│   │   ├── vercel-react-best-practices/ # React performance
+│   │   ├── supabase-postgres-best-practices/ # Postgres optimization
+│   │   └── verification-before-completion/ # Verification skill
+│   ├── context/                  # Context files
+│   │   ├── core/                 # Core standards
+│   │   └── project/              # Project-specific
+│   ├── commands/                 # Command templates
+│   └── config/                  # Configuration files
+├── install-opencode.sh           # Installation script
+├── LICENSE                       # License
+└── README.md                     # This file
 ```
 
 ## License

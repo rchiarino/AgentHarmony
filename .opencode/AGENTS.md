@@ -175,9 +175,18 @@ When issues found:
 
 ### Available Skills
 
-| Skill | Purpose | Command |
-|-------|---------|---------|
-| **task-management** | Track and manage feature subtasks | `bash .opencode/skills/task-management/router.sh [command]` |
+All skills are located in `.opencode/skills/`:
+
+| Skill | Purpose | Location |
+|-------|---------|-----------|
+| **task-management** | Track and manage feature subtasks | `.opencode/skills/task-management/` |
+| **code-simplifier** | Simplify and refine code | `.opencode/skills/code-simplifier/` |
+| **frontend-design** | Create production-grade frontend interfaces | `.opencode/skills/frontend-design/` |
+| **tailwind-design-system** | Build scalable design systems with Tailwind | `.opencode/skills/tailwind-design-system/` |
+| **web-design-guidelines** | Web interface guidelines and accessibility | `.opencode/skills/web-design-guidelines/` |
+| **vercel-react-best-practices** | React/Next.js performance optimization | `.opencode/skills/vercel-react-best-practices/` |
+| **supabase-postgres-best-practices** | Postgres performance and best practices | `.opencode/skills/supabase-postgres-best-practices/` |
+| **verification-before-completion** | Verification before completion | `.opencode/skills/verification-before-completion/` |
 
 ### Task Management Skill
 
